@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probability Analysis</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .bar-container {
+            width: 50%; /* Set to 50% of the screen width */
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            margin: 10px auto; /* Center align */
+            display: flex;
+            align-items: center;
+            padding: 5px;
+        }
+        
+        .bar {
+            height: 20px;
+            border-radius: 5px;
+            text-align: right;
+            padding-right: 5px;
+            color: white;
+            display: inline-block;
+        }
+        
+        .label {
+            width: 150px; /* Fixed width to prevent overlap */
+            text-align: right;
+            padding-right: 10px;
+            font-weight: bold;
+        }
+        
+        .probability-value {
+            margin-left: 10px; /* Add space between the bar and the value */
+        }
+        
+        .non-hate { background-color: #4CAF50; }
+        .hate { background-color: #f44336; }
+        .acceptable { background-color: #2196F3; }
+        .inappropriate { background-color: #ff9800; }
+        .offensive { background-color: #9c27b0; }
+        .violent { background-color: #795548; }
+        
+        .form-container {
+            
+            border-radius: 5px;
+            padding: 20px;
+            
+        }
+        
+        .btn-center {
+            display: block;
+            margin: 0 auto;
+        }
+
+        textarea.form-control {
+            width: 60%; /* Adjust the width as needed */
+            margin: 0 auto;
+            border-radius: 10px; /* Add border-radius */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="form-container">
+            <form method="post" class="text-center">
+                <div class="form-group">
+                    <h2>Hate Speech Detector</h2>
+                    <h3>Enter your comment:</h3>
+                    <textarea id="comment" name="comment" class="form-control" rows="1"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-center">Analyze</button>
+            </form>
+        </div>
+
+        {% if probabilities %}
+            <h2 class="mt-5">Probabilities</h2>
+            <div class="bar-container">
+                <div class="label">Non-Hate:</div>
+                <div class="bar non-hate" style="width: calc(50% * {{ probabilities[0] }})"></div>
+                <div class="probability-value">{{ probabilities[0] | round(3) }}</div>
+            </div>
+            <div class="bar-container">
+                <div class="label">Hate:</div>
+                <div class="bar hate" style="width: calc(50% * {{ probabilities[1] }})"></div>
+                <div class="probability-value">{{ probabilities[1] | round(3) }}</div>
+            </div>
+            
+            <br><br>
+            
+            <h3>More Details:</h3>
+            <ul class="list-unstyled">
+                {% for label, probability in zip(labels[2:], probabilities[2:]) %}
+                    <li>
+                        <div class="bar-container">
+                            <div class="label">{{ label }}:</div>
+                            <div class="bar {{ label | lower }}" style="width: calc(50% * {{ probability }})"></div>
+                            <div class="probability-value">{{ probability | round(3) }}</div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <!-- Include Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
